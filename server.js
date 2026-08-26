@@ -83,7 +83,16 @@ app.post('/send', async (req, res) => {
   try {
     const { message } = req.body;
     const imageFile = req.files?.image; // multer file when input name='image'
-    if (!client) return res.json({ error: 'Baileys not initialized' });
+
+    // Check if Baileys client is initialized
+    if (!client) return res.json({ error: 'Baileys not initialized - server started without WhatsApp connection' });
+
+    // Node version compatibility check
+    const nodeMajor = parseInt(process.version.split('.')[0]);
+    if (nodeMajor < 16 || nodeMajor > 18) {
+      console.warn(`⚠️  Node.js v${process.version} detected - Baileys may have compatibility issues.`);
+    }
+
     if (!message) return res.json({ error: 'No message provided' });
 
     const results = [];
@@ -148,6 +157,24 @@ async function startBaileys() {
   });
 }
 
+// Check Node.js version compatibility
+const minNode = '16.0.0';
+const maxNode = '18.0.0';
+const currentNode = process.version;
+
+const semver = require('semver');
+const nodeCompatible = semver.gte(currentNode, minNode) && semver.lte(currentNode, maxNode);
+
+if (!nodeCompatible) {
+  console.warn(`\n⚠️  WARNING: Node.js v${currentNode} detected.`);
+  console.warn(`   This Baileys version (rc14) is optimized for Node.js ${minNode} - ${maxNode}.`);
+  console.warn(`   Current version may cause: "Cannot destructure property 'creds' of 'authState'" error.`);
+  console.warn(`   Consider upgrading/downgrading Node, or the send feature may not work.\n`);
+} else {
+  console.log(`✅ Node.js v${currentNode} - Baileys compatibility confirmed.\n`);
+}
+
+// Global error handlers to keep server running safely
 process.on('uncaughtException', (err) => {
   console.error('Uncaught exception:', err.message);
   // Prevent crash; keep server running
