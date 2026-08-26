@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-top">
+        <div class="mark">D</div>
+        <button class="close-nav" id="closeNav" aria-label="Tutup menu">×</button>
+      </div>
+      <nav class="nav" aria-label="Navigasi utama">
+        <a class="nav-item active" href="#overview" data-section="overview"><span class="nav-icon">⌂</span> Ringkasan</a>
+        <a class="nav-item" href="#contacts" data-section="contacts"><span class="nav-icon">♙</span> Kontak</a>
+        <a class="nav-item" href="#campaign" data-section="campaign"><span class="nav-icon">✦</span> Buat pesan</a>
+        <a class="nav-item" href="#history" data-section="history"><span class="nav-icon">◷</span> Aktivitas</a>
+      </nav>
+      <div class="sidebar-note">
+        <span class="tiny-lock">⌾</span>
+        <strong>Gunakan dengan aman</strong>
+        <p>Hubungi hanya kontak yang sudah memberi izin.</p>
+      </div>
+      <div class="profile"><div class="avatar">A</div><div><strong>Admin</strong><span>Workspace</span></div><button aria-label="Opsi akun">•••</button></div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar"><button class="menu-button" id="openNav" aria-label="Buka menu">☰</button><div class="breadcrumb">Dashboard <span>/</span> <b id="pageName">Ringkasan</b></div><div class="top-actions"><button class="icon-button" title="Notifikasi">♧</button><div class="top-avatar">A</div></div></header>
+
+      <section class="page-section active-section" id="overview">
+        <div class="heading-row"><div><p class="eyebrow">RINGKASAN</p><h1>Selamat datang kembali, Admin.</h1><p class="subheading">Siapkan pesan WhatsApp untuk kontak yang sudah memilih menerima kabar dari Anda.</p></div><button class="primary-button" data-scroll="campaign">+ Buat pesan baru</button></div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="stat-label">Total kontak <span class="info">i</span></div><div class="stat-value" id="totalContacts">0</div><div class="stat-foot neutral">Database saat ini</div></div>
+          <div class="stat-card"><div class="stat-label">Siap dihubungi <span class="info">i</span></div><div class="stat-value" id="readyContacts">0</div><div class="stat-foot positive">● Kontak berizin</div></div>
+          <div class="stat-card"><div class="stat-label">Pesan disiapkan <span class="info">i</span></div><div class="stat-value" id="sentCount">0</div><div class="stat-foot neutral">Bulan ini</div></div>
+          <div class="stat-card accent-card"><div class="stat-label">Status koneksi</div><div class="stat-value status-value"><span class="status-dot"></span> Siap</div><div class="stat-foot">WhatsApp dibuka manual</div></div>
+        </div>
+        <div class="content-grid">
+          <div class="panel progress-panel"><div class="panel-title"><div><p class="eyebrow">ALUR KERJA</p><h2>Mulai dalam tiga langkah</h2></div><span class="percent">0%</span></div><div class="progress-track"><span id="progressBar"></span></div><div class="steps"><div class="step complete"><span>1</span><div><strong>Siapkan kontak</strong><p>Tambah nomor yang sudah memberikan izin.</p></div></div><div class="step"><span>2</span><div><strong>Tulis pesan</strong><p>Masukkan chat dan gambar jika diperlukan.</p></div></div><div class="step"><span>3</span><div><strong>Buka WhatsApp</strong><p>Periksa kembali, lalu kirim secara manual.</p></div></div></div></div>
+          <div class="panel tips-panel"><div class="panel-title"><div><p class="eyebrow">PANDUAN SINGKAT</p><h2>Jaga pesan tetap relevan</h2></div><span class="spark">✦</span></div><ul><li>Pastikan penerima mengenal bisnis Anda.</li><li>Berikan cara berhenti menerima pesan.</li><li>Hindari mengirim terlalu sering.</li></ul><a href="#" class="text-link" id="learnMore">Lihat panduan privasi <span>↗</span></a></div>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">KONTAK TERBARU</p><h2>Daftar kontak</h2></div><button class="secondary-button" data-section-target="contacts">Kelola kontak <span>→</span></button></div>
+        <div class="panel table-panel"><div class="table-toolbar"><div class="search-box"><span>⌕</span><input id="searchInput" placeholder="Cari nama atau nomor..." /></div><span class="table-count" id="tableCount">0 kontak</span></div><div class="table-wrap"><table><thead><tr><th>Kontak</th><th>Nomor WhatsApp</th><th>Izin pesan</th><th>Status</th><th></th></tr></thead><tbody id="contactRows"></tbody></table><div class="empty-state" id="emptyState"><div class="empty-icon">♧</div><strong>Belum ada kontak</strong><p>Tambahkan nomor pertama Anda untuk mulai.</p><button class="secondary-button" data-section-target="contacts">Tambah kontak</button></div></div></div>
+      </section>
+
+      <section class="page-section" id="contacts"><div class="section-header"><div><p class="eyebrow">DATABASE KONTAK</p><h1>Kelola kontak</h1><p class="subheading">Simpan nomor dengan izin komunikasi yang jelas.</p></div><button class="primary-button" id="openAddContact">+ Tambah kontak</button></div><div class="contact-actions"><div class="panel import-panel"><div class="import-icon">↓</div><div><h2>Impor banyak nomor</h2><p>Tempel satu nomor per baris atau unggah CSV sederhana.</p><textarea id="bulkInput" placeholder="628123456789\n628987654321"></textarea><div class="import-footer"><label class="file-button">Pilih CSV <input type="file" id="csvFile" accept=".csv,text/csv" hidden></label><button class="primary-button small" id="importButton">Impor kontak</button></div></div></div><div class="panel privacy-panel"><span class="shield">⌾</span><h2>Persetujuan adalah wajib</h2><p>Gunakan daftar ini hanya untuk kontak yang sudah setuju menerima pesan WhatsApp dari Anda.</p><div class="check-line"><span>✓</span> Kontak berizin saja</div></div></div><div class="panel table-panel full-table"><div class="table-toolbar"><h2>Semua kontak</h2><div class="search-box"><span>⌕</span><input id="contactSearch" placeholder="Cari kontak..." /></div></div><div class="table-wrap"><table><thead><tr><th>Kontak</th><th>Nomor WhatsApp</th><th>Izin pesan</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="allContactRows"></tbody></table><div class="empty-state" id="allEmpty"><div class="empty-icon">♧</div><strong>Belum ada kontak</strong><p>Impor atau tambahkan nomor secara manual.</p></div></div></div></section>
+
+      <section class="page-section" id="campaign"><div class="section-header"><div><p class="eyebrow">PESAN BARU</p><h1>Siapkan pesan WhatsApp</h1><p class="subheading">Tulis sekali, lalu buka percakapan untuk setiap kontak yang dipilih.</p></div><div class="draft-status"><span></span> Tersimpan otomatis</div></div><div class="composer-layout"><div class="panel composer"><label for="messageInput">Isi pesan <span class="required">*</span></label><p class="field-hint">Gunakan bahasa yang jelas dan personal. Maksimal 4.000 karakter.</p><textarea id="messageInput" maxlength="4000" placeholder="Halo, kami ingin berbagi kabar baik..."></textarea><div class="composer-bottom"><span id="charCount">0 / 4.000</span><button class="clear-button" id="clearMessage">Bersihkan</button></div><div class="media-upload"><div class="upload-symbol">＋</div><div><strong>Tambahkan gambar</strong><p id="fileName">PNG, JPG hingga 5 MB</p></div><label class="secondary-button small">Pilih gambar<input type="file" id="imageInput" accept="image/png,image/jpeg" hidden></label></div><div class="image-preview" id="imagePreview"></div><div class="composer-actions"><button class="secondary-button" id="saveDraft">Simpan draf</button><button class="primary-button" id="prepareButton">Siapkan WhatsApp <span>↗</span></button></div></div><div class="panel preview-panel"><div class="preview-top"><h2>Pratinjau</h2><span>WhatsApp</span></div><div class="phone"><div class="phone-head"><span>‹</span><div class="mini-avatar">A</div><div><strong>Kontak</strong><small>online</small></div><span class="phone-more">⋮</span></div><div class="chat-area"><div class="bubble" id="previewBubble">Pesan Anda akan muncul di sini.</div><span class="bubble-time">09:41 ✓✓</span></div></div><p class="preview-note">Pesan akan dibuka di WhatsApp. Anda tetap menekan tombol kirim sendiri.</p></div></div></section>
+
+      <section class="page-section" id="history"><div class="section-header"><div><p class="eyebrow">AKTIVITAS</p><h1>Riwayat pesan</h1><p class="subheading">Catatan persiapan pesan dari workspace ini.</p></div></div><div class="panel history-panel" id="historyList"><div class="empty-state"><div class="empty-icon">◷</div><strong>Belum ada aktivitas</strong><p>Pesan yang Anda siapkan akan muncul di sini.</p></div></div></section>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="contactModal"><div class="modal"><button class="modal-close" id="closeModal">×</button><p class="eyebrow">KONTAK BARU</p><h2>Tambah kontak</h2><p class="modal-subtitle">Tambahkan kontak yang sudah memberi izin kepada Anda.</p><label>Nama (opsional)<input id="nameInput" placeholder="Contoh: Toko Medan" /></label><label>Nomor WhatsApp<input id="phoneInput" inputmode="tel" placeholder="628123456789" /></label><label class="consent"><input type="checkbox" id="consentInput" /> <span>Saya memastikan kontak ini sudah memberikan izin menerima pesan.</span></label><button class="primary-button full" id="addContactButton">Simpan kontak</button></div></div>
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
