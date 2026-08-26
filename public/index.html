@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp Blast Dashboard</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+  :root{--bg:#0b0e14;--surface:#12121e;--surface-2:#181828;--primary:#7c3aed;--primary-glow:#a78bfa;--text:#e6e6f0;--text-dim:#9ca3af;--radius:16px;--shadow:0 24px 48px rgba(0,0,0,0.35);}
+  *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter',system-ui,sans-serif}
+  body{background:linear-gradient(135deg,#0b0e14 0%,#121223 60%,#1a1030 100%);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+  header{width:100%;max-width:900px;text-align:center;margin-bottom:32px}
+  header h1{font-size:2.6rem;font-weight:800;background:linear-gradient(90deg,#d8b4fe,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-1.2px}
+  header p{color:var(--text-dim);margin-top:6px;font-size:1.05rem}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px;width:100%;max-width:900px}
+  .card{background:rgba(255,255,255,0.03);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);padding:28px;box-shadow:var(--shadow);transition:transform .15s ease,border-color .2s ease}
+  .card:hover{transform:translateY(-3px);border-color:rgba(124,58,237,0.35)}
+  .card h2{font-size:1.1rem;font-weight:700;margin-bottom:16px;color:#fff;display:flex;align-items:center;gap:8px}
+  .badge{display:inline-block;background:linear-gradient(135deg,#7c3aed,#9333ea);color:#fff;padding:6px 14px;border-radius:999px;font-weight:700;font-size:.78rem;letter-spacing:.2px;box-shadow:0 0 12px rgba(124,58,237,.35);margin-top:8px}
+  input,textarea{width:100%;padding:12px 14px;background:#0b0e14;border:1px solid rgba(255,255,255,.08);border-radius:10px;color:#e6e6f0;font-size:.95rem;margin-bottom:14px;outline:none;transition:border-color .2s}
+  input:focus,textarea:focus{border-color:#7c3aed}
+  textarea{min-height:100px;resize:vertical}
+  button{width:100%;padding:14px;background:linear-gradient(135deg,#7c3aed,#9333ea);border:none;border-radius:12px;color:#fff;font-weight:800;font-size:1rem;cursor:pointer;box-shadow:0 6px 20px rgba(124,58,237,.35);transition:transform .1s ease,box-shadow .2s ease}
+  button:hover{box-shadow:0 10px 28px rgba(124,58,237,.5)}
+  button:active{transform:translateY(1px)}
+  .status-row{display:flex;align-items:center;gap:12px;margin-top:12px}
+  .dot{width:12px;height:12px;border-radius:50%;background:#ef4444;box-shadow:0 0 6px #ef4444;animation:pulse 1.2s infinite}
+  .dot.open{background:#22c55e;box-shadow:0 0 8px #22c55e}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .qr-wrap{text-align:center;margin-top:12px;padding:16px;background:rgba(255,255,255,.04);border-radius:12px;border:1px dashed rgba(255,255,255,.08)}
+  .qr-wrap img{width:220px;height:220px;border-radius:8px;background:#fff;padding:6px}
+  .numbers-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.06);padding:6px 10px;border-radius:8px;font-size:.8rem;color:#cbd5e1;font-family:monospace}
+  .log-box{max-height:220px;overflow-y:auto;background:#0b0e14;border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:14px;font-size:.82rem;color:#cbd5e1;font-family:monospace;margin-top:16px}
+  .log-box .line{margin-bottom:3px}
+  .success{color:#4ade80}
+  .warn{color:#facc15}
+  .error{color:#f87171}
+  small{color:#64748b;font-size:.75rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>WhatsApp Blast Dashboard</h1>
+  <p>Login WhatsApp → Input Nomor → Kirim Pesan / Foto</p>
+</header>
+
+<div class="grid">
+  <!-- Login / Status -->
+  <section class="card">
+    <h2>🔐 Login WhatsApp (Pairing Code)</h2>
+    <div id="statusArea">
+      <div class="status-row"><span class="dot" id="dot"></span> <span id="statusText">Offline</span></div>
+    </div>
+    <div style="margin-top:14px;">
+      <input type="text" id="pairNumber" placeholder="Nomor WhatsApp (contoh: 6281234567890)" />
+      <button onclick="requestPairing()">🔑 Dapatkan Kode Pairing</button>
+    </div>
+    <div id="pairingArea" class="qr-wrap" style="display:none; margin-top:14px;">
+      <h3 style="font-size:1.2rem; color:#fff; margin-bottom:6px;">Kode Pairing</h3>
+      <div id="pairingCodeDisplay" style="font-size:2.2rem; font-weight:800; letter-spacing:6px; color:#7c3aed; background:#0b0e14; padding:14px; border-radius:12px; border:2px dashed #7c3aed; display:inline-block; font-family:monospace;"></div>
+      <p style="margin-top:10px; font-size:.85rem; color:var(--text-dim);">Masukkan kode di atas di WhatsApp:<br/><b>Settings → Linked Devices → Link a device → Link with phone number instead</b></p>
+    </div>
+    <p style="margin-top:14px;font-size:.85rem;color:var(--text-dim);">Bot akan terhubung otomatis setelah kode digunakan.</p>
+  </section>
+
+  <!-- Database Nomor -->
+  <section class="card">
+    <h2>📋 Database Nomor</h2>
+    <textarea id="numbersText" placeholder="Masukkan nomor (satu per baris), contoh:
+6281234567890
+6289876543210"></textarea>
+    <button onclick="saveNumbers()">💾 Simpan Nomor ke DB</button>
+    <div class="numbers-list" id="numbersList"></div>
+    <small>Format: 62xxxxxxxxxx (tanpa +, spasi, atau tanda baca)</small>
+  </section>
+
+  <!-- Blast -->
+  <section class="card" style="grid-column: span 2;">
+    <h2>🚀 Blast Pesan</h2>
+    <textarea id="blastText" placeholder="Tulis pesan yang akan dikirim ke semua nomor..."></textarea>
+    <input type="file" id="imageFile" accept="image/*" style="margin-bottom:14px;" />
+    <button onclick="sendBlast()">📤 Kirim Blast</button>
+    <div class="log-box" id="logBox"></div>
+  </section>
+</div>
+
+<script>
+  async function requestPairing() {
+    const number = document.getElementById('pairNumber').value.trim();
+    try {
+      const res = await fetch('/api/pairing', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({number}) });
+      const data = await res.json();
+      const area = document.getElementById('pairingArea');
+      const display = document.getElementById('pairingCodeDisplay');
+      if (data.ok && data.pairingCode) {
+        display.textContent = data.pairingCode;
+        area.style.display = 'block';
+      } else {
+        display.textContent = 'Gagal';
+        area.style.display = 'block';
+      }
+    } catch(e) {
+      alert('Gagal: ' + e.message);
+    }
+  }
+  async function loadStatus() {
+    try {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+      document.getElementById('statusText').textContent = data.status;
+      document.getElementById('dot').className = 'dot ' + (data.status === 'open' ? 'open' : '');
+      const area = document.getElementById('pairingArea');
+      if (data.pairingCode) {
+        document.getElementById('pairingCodeDisplay').textContent = data.pairingCode;
+        area.style.display = 'block';
+      } else if (data.status !== 'open') {
+        area.style.display = 'none';
+      }
+    } catch(e) {}
+  }
+  async function saveNumbers() {
+    const raw = document.getElementById('numbersText').value.trim();
+    const arr = raw.split(/\n/).map(s => s.replace(/[^0-9]/g, '')).filter(s => s.length >= 8);
+    await fetch('/api/numbers', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({numbers: arr}) });
+    document.getElementById('numbersText').value = arr.join('\n');
+    loadNumbers();
+  }
+  async function loadNumbers() {
+    const res = await fetch('/api/numbers');
+    const data = await res.json();
+    document.getElementById('numbersText').value = data.numbers.join('\n');
+    const list = document.getElementById('numbersList');
+    list.innerHTML = data.numbers.map(n => `<span class="chip">${n}</span>`).join('');
+  }
+  async function sendBlast() {
+    const text = document.getElementById('blastText').value.trim();
+    const fileInput = document.getElementById('imageFile');
+    const form = new FormData();
+    form.append('text', text);
+    if (fileInput.files[0]) form.append('image', fileInput.files[0]);
+    const res = await fetch('/api/blast', { method: 'POST', body: form });
+    const data = await res.json();
+    const log = document.getElementById('logBox');
+    log.innerHTML = (data.results || []).map(r => `<div class="line ${r.ok?'success':'error'}">${r.number}: ${r.ok ? 'Terkirim' : 'Gagal - ' + (r.error || '')}</div>`).join('') + (data.results ? '' : `<div class="line error">${data.error || 'Gagal'}</div>`);
+    log.scrollTop = log.scrollHeight;
+  }
+  setInterval(loadStatus, 3000);
+  loadStatus();
+  loadNumbers();
+</script>
+</body>
+</html>
