@@ -1,0 +1,28 @@
+{
+  "name": "testinterview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamavingabre-sketch/testinterview.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamavingabre-sketch/testinterview/issues"
+  },
+  "homepage": "https://github.com/kamavingabre-sketch/testinterview#readme",
+  "dependencies": {
+    "@whiskeysockets/baileys": "^7.0.0-rc14",
+    "cors": "^2.8.6",
+    "csv-parser": "^3.2.1",
+    "express": "^5.2.1",
+    "multer": "^2.2.0",
+    "qrcode": "^1.5.4"
+  }
+}
